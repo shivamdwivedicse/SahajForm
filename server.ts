@@ -84,7 +84,7 @@ Analyze the user's text and return:
 4. formal_hindi: The full formal administrative application letter in Hindi (औपचारिक शासकीय प्रार्थना पत्र), ready to be printed or submitted.
 5. missing_info: An array of strings listing the exact bracket tags used in the letters that the citizen must fill in (e.g., ["Full Name", "Complete Address", "Consumer Number", "Contact Number"]).`;
 
-    const candidateModels = ['gemini-3.6-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
+    const candidateModels = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
     let lastError: any = null;
     let responseText: string | undefined = undefined;
 
