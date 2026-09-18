@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SahajForm — Dialect-to-Official-Form Translator</title>
+    <meta name="description" content="Dialect-to-Official-Form Translator that converts informal spoken or typed problem descriptions into formal, polite government application letters in English and Hindi." />
+    <meta property="og:title" content="SahajForm — Dialect-to-Official-Form Translator" />
+    <meta property="og:description" content="Dialect-to-Official-Form Translator that converts informal spoken or typed problem descriptions into formal, polite government application letters in English and Hindi." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="flex flex-col min-h-screen">
+    
+    <!-- Top Header: Premium Civic-Tech Branding -->
+    <header class="border-b border-white/[0.08] bg-[#0b0f17]/90 backdrop-blur-md sticky top-0 z-40 w-full">
+      <div class="w-full px-6 sm:px-10 lg:px-12 xl:px-16 h-20 flex items-center justify-between">
+        
+        <!-- Left: Seal & Branding (Clean SVG Logomark: Document + Speech Bubble Concept, Monochrome Line Art, No Emojis) -->
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-[#131a27] border border-white/10 flex items-center justify-center text-[#f5a623] shadow-md shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Official Document with Folded Corner -->
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+              <polyline points="14 2 14 8 20 8" />
+              <!-- Speech Bubble loop indicating Dialect to Official Text Translation -->
+              <path d="M8 12h5" />
+              <path d="M8 15.5h3" />
+              <path d="M15.5 13.5c1.4 0 2.5 1 2.5 2.2 0 1.2-1 2.3-2.5 2.3h-.8l-1.7 1.2v-1.2h-.5c-.5 0-1-.2-1.3-.5" stroke-width="1.3" opacity="0.85" />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl font-bold tracking-tight text-white font-sans">SahajForm</span>
+              <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#161f30] text-[#9ca3af] border border-white/10">सहज फॉर्म</span>
+            </div>
+            <span class="text-xs text-[#9ca3af]">Citizen Grievance & Administrative Translator</span>
+          </div>
+        </div>
+
+        <!-- Right: Status / Security Badge -->
+        <div class="flex items-center gap-4">
+          <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#131a27] border border-white/10 text-xs text-[#9ca3af]">
+            <span class="w-2 h-2 rounded-full bg-[#22c55e]"></span>
+            <span>Gemini AI Engine Active</span>
+          </div>
+          <div class="text-xs text-[#9ca3af] hidden md:block">
+            <span>Bilingual • Zero Hallucination Protocol</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stepper Progress Header (Full-Width with Balanced Spacing) -->
+    <div id="stepper-header" class="w-full px-6 sm:px-10 lg:px-12 xl:px-16 pt-8 pb-6 sm:pt-10 sm:pb-8">
+      <div class="relative flex items-center justify-between w-full">
+        
+        <!-- Connecting Line Behind Stepper -->
+        <div class="absolute top-[20px] left-[24px] right-[24px] h-[2px] bg-[#1c263a] z-0"></div>
+        <div id="stepper-progress-fill" class="absolute top-[20px] left-[24px] h-[2px] bg-[#f5a623] transition-all duration-300 z-0" style="width: 0%;"></div>
+
+        <!-- Step 1 Indicator -->
+        <button id="step-nav-1" type="button" class="relative z-10 flex flex-col items-center sm:flex-row sm:items-center gap-3 bg-[#0b0f17] px-3 py-1 cursor-pointer group">
+          <div id="step-dot-1" class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm step-indicator-active shrink-0 transition-transform group-hover:scale-105">
+            1
+          </div>
+          <div class="flex flex-col text-center sm:text-left">
+            <span class="text-[11px] uppercase tracking-wider text-[#9ca3af] font-semibold">Step 1</span>
+            <span id="step-label-1" class="text-xs sm:text-sm font-semibold text-white">Grievance Category</span>
+          </div>
+        </button>
+
+        <!-- Step 2 Indicator -->
+        <button id="step-nav-2" type="button" class="relative z-10 flex flex-col items-center sm:flex-row sm:items-center gap-3 bg-[#0b0f17] px-3 py-1 cursor-pointer group">
+          <div id="step-dot-2" class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm step-indicator-upcoming shrink-0 transition-transform group-hover:scale-105">
+            2
+          </div>
+          <div class="flex flex-col text-center sm:text-left">
+            <span class="text-[11px] uppercase tracking-wider text-[#9ca3af] font-semibold">Step 2</span>
+            <span id="step-label-2" class="text-xs sm:text-sm font-semibold text-[#9ca3af]">Describe Problem</span>
+          </div>
+        </button>
+
+        <!-- Step 3 Indicator -->
+        <button id="step-nav-3" type="button" class="relative z-10 flex flex-col items-center sm:flex-row sm:items-center gap-3 bg-[#0b0f17] px-3 py-1 cursor-pointer group">
+          <div id="step-dot-3" class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm step-indicator-upcoming shrink-0 transition-transform group-hover:scale-105">
+            3
+          </div>
+          <div class="flex flex-col text-center sm:text-left">
+            <span class="text-[11px] uppercase tracking-wider text-[#9ca3af] font-semibold">Step 3</span>
+            <span id="step-label-3" class="text-xs sm:text-sm font-semibold text-[#9ca3af]">Official Letters</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Main Wizard Workspace (Full Screen Width with Balanced Box Spacing) -->
+    <main class="flex-1 w-full px-6 sm:px-10 lg:px-12 xl:px-16 py-6 sm:py-8 flex flex-col">
+      
+      <!-- =================================================================== -->
+      <!-- STEP 1: Select Grievance Category Card                              -->
+      <!-- =================================================================== -->
+      <section id="step-1-card" class="wizard-step active w-full">
+        <div class="civic-card p-8 sm:p-10 lg:p-12 xl:p-14 flex flex-col">
+          
+          <!-- Card Header -->
+          <div class="mb-10">
+            <span class="text-xs uppercase tracking-[0.05em] font-bold text-[#9ca3af] block mb-2">Step 1 of 3 • Application Format</span>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3">
+              Select Government Grievance Category
+            </h1>
+            <p class="text-base sm:text-lg text-[#e5e7eb] leading-[1.6] max-w-4xl">
+              Choose the administrative office or department where your complaint or petition needs to be submitted. Each category adheres to standard government letterhead formats.
+            </p>
+          </div>
+
+          <!-- Hidden Native Select (maintains programmatic binding) -->
+          <select id="form-type" class="hidden">
+            <option value="Electricity Complaint" selected>Electricity Complaint</option>
+            <option value="Ration Card">Ration Card Issue</option>
+            <option value="Water Supply">Water Supply & Drainage</option>
+            <option value="Police Complaint">Police Complaint / GD</option>
+            <option value="RTI Application">RTI Application (Act 2005)</option>
+            <option value="School Admission">School Admission / EWS</option>
+            <option value="General Administrative">General Administrative (DM / SDM)</option>
+          </select>
+
+          <!-- Interactive Category Grid (Full-width responsive grid with generous 24px gap) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            
+            <!-- Category Tile 1 -->
+            <div class="category-tile selected" data-value="Electricity Complaint">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#f5a623] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-[#f5a623] flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#f5a623]"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">Electricity Complaint</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">Power cuts, transformer damage, meter billing disputes, lineman inaction</p>
+            </div>
+
+            <!-- Category Tile 2 -->
+            <div class="category-tile" data-value="Ration Card">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#9ca3af] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                    <line x1="2" y1="10" x2="22" y2="10"></line>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">Ration Card & Food Supply</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">Fair price dealer irregularities, quota refusal, beneficiary addition, new card</p>
+            </div>
+
+            <!-- Category Tile 3 -->
+            <div class="category-tile" data-value="Water Supply">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#9ca3af] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">Water Supply & Sewage</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">Contaminated drinking water, main pipeline rupture, open sewer blockages</p>
+            </div>
+
+            <!-- Category Tile 4 -->
+            <div class="category-tile" data-value="Police Complaint">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#9ca3af] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">Police Complaint & GD</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">Theft reports, lost document GD, public harassment, FIR representation to SHO</p>
+            </div>
+
+            <!-- Category Tile 5 -->
+            <div class="category-tile" data-value="RTI Application">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#9ca3af] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">RTI Act Application (2005)</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">Municipal budget spending, tender details, road sanction files to PIO</p>
+            </div>
+
+            <!-- Category Tile 6 -->
+            <div class="category-tile" data-value="School Admission">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#9ca3af] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">School Admission & EWS</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">EWS quota allotment denial, transfer certificate delay, fee transparency</p>
+            </div>
+
+            <!-- Category Tile 7 (Spans columns for balanced full-width grid) -->
+            <div class="category-tile sm:col-span-2 lg:col-span-3 xl:col-span-2" data-value="General Administrative">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-11 h-11 rounded-xl bg-[#1d273a] flex items-center justify-center text-[#9ca3af] shrink-0">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4"></path>
+                  </svg>
+                </div>
+                <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center checkmark-dot">
+                  <span class="w-2.5 h-2.5 rounded-full bg-transparent"></span>
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white tracking-tight">General Administrative Petition</h3>
+              <p class="text-xs sm:text-sm text-[#9ca3af] leading-relaxed">Formal representation to District Magistrate (DM), SDM, Municipal Commissioner, or Tehsildar</p>
+            </div>
+
+          </div>
+
+          <!-- Step 1 Actions (Spacious footer with guidance) -->
+          <div class="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs text-[#9ca3af] flex items-center gap-2">
+              <svg class="w-4 h-4 text-[#22c55e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+              <span>Selected category activates the official ministerial letterhead format</span>
+            </div>
+            <button id="btn-goto-step-2" type="button" class="btn-primary-amber w-full sm:w-auto">
+              <span>Continue to Describe Grievance</span>
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- =================================================================== -->
+      <!-- STEP 2: Describe Grievance Card                                     -->
+      <!-- =================================================================== -->
+      <section id="step-2-card" class="wizard-step w-full">
+        <div class="civic-card p-8 sm:p-10 lg:p-12 xl:p-14 flex flex-col">
+          
+          <!-- Card Header -->
+          <div class="mb-10">
+            <span class="text-xs uppercase tracking-[0.05em] font-bold text-[#9ca3af] block mb-2">Step 2 of 3 • Citizen Statement</span>
+            <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3">
+              Describe Your Grievance
+            </h2>
+            <p class="text-base sm:text-lg text-[#e5e7eb] leading-[1.6] max-w-4xl">
+              Type or speak casually in your everyday Hindi, Hinglish, Bhojpuri, or local dialect. SahajForm structures your colloquial description into respectful administrative petitions in both English and Hindi.
+            </p>
+          </div>
+
+          <!-- Main Input & Dialect Assistance Grid (Spacious two-column layout on wide screens) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 mb-10 items-start">
+            
+            <!-- Left Primary Box: Textarea & Voice Input -->
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-3">
+              <div class="flex items-center justify-between pb-1">
+                <label for="problem-input" class="text-xs uppercase tracking-[0.05em] font-semibold text-[#9ca3af]">
+                  Your Informal Explanation
+                </label>
+                
+                <!-- Microphone Voice Input Button (Clean SVG Line Icon, No Emojis) -->
+                <button id="btn-mic" type="button" class="btn-secondary-neutral min-h-[44px] px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-2">
+                  <svg class="w-4 h-4 text-[#f5a623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                  </svg>
+                  <span>Voice Input (Hindi / Hinglish)</span>
+                </button>
+              </div>
+
+              <!-- Textarea (min 18px padding, soft amber glow on focus) -->
+              <textarea 
+                id="problem-input" 
+                rows="10" 
+                placeholder="Speak or type freely here in your own words.&#10;&#10;For example: 'Bhaiya hamare mohalle me 3 din se bijli nahi aa rahi. Transformer me aag lag gayi thi. Bacchon ke exams hain aur inverter bhi baith gaya. Line man ko bolte hain to bolta hai mere paas cable nahi hai. Kripya naya transformer lagwayein...'"
+                class="civic-input w-full resize-y font-sans placeholder:text-[#6b7280]"
+              ></textarea>
+
+              <!-- Textarea Footer Counter -->
+              <div class="flex items-center justify-between text-xs text-[#9ca3af] px-1 pt-1">
+                <span id="char-count">0 characters entered</span>
+                <button id="btn-clear" type="button" class="text-[#9ca3af] hover:text-white transition-colors cursor-pointer">
+                  Clear text
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Side Boxes: Presets & Protocol -->
+            <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+              
+              <!-- Box A: Regional Dialect Presets Card -->
+              <div class="p-6 sm:p-7 rounded-2xl bg-[#0e1422] border border-white/[0.08] flex flex-col gap-4 shadow-lg">
+                <div class="flex flex-col gap-1">
+                  <span class="text-xs uppercase tracking-[0.05em] font-semibold text-[#f5a623]">
+                    Authentic Regional Dialect Presets
+                  </span>
+                  <span class="text-xs text-[#9ca3af]">Click any chip to populate a realistic sample:</span>
+                </div>
+                <div id="presets-container" class="flex flex-wrap gap-2.5 pt-1">
+                  <!-- Dynamically populated from JS -->
+                </div>
+              </div>
+
+              <!-- Box B: Zero Hallucination Assurance Card -->
+              <div class="p-6 sm:p-7 rounded-2xl bg-[#0e1422] border border-white/[0.08] flex items-start gap-4 shadow-lg">
+                <div class="w-10 h-10 rounded-xl bg-[#172032] flex items-center justify-center text-[#f5a623] shrink-0 mt-0.5">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white mb-1.5">Zero Hallucination Protocol</h4>
+                  <p class="text-xs text-[#9ca3af] leading-relaxed">
+                    SahajForm strictly translates citizen facts. It never fabricates consumer numbers, dates, or false allegations. Any missing bureaucratic field will be identified for your review as an editable placeholder such as <code class="text-white font-mono bg-[#1a2336] px-1.5 py-0.5 rounded border border-white/10">[Consumer ID]</code>.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Step 2 Actions (Spacious divider and buttons) -->
+          <div class="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button id="btn-back-to-step-1" type="button" class="btn-secondary-neutral w-full sm:w-auto">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Back to Category</span>
+            </button>
+
+            <button id="btn-generate" type="button" class="btn-primary-amber w-full sm:w-auto">
+              <span>Generate Official Letters (English & Hindi)</span>
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- =================================================================== -->
+      <!-- LOADING CARD (Animated Progress Bar with Soft Pulsing Amber Glow)   -->
+      <!-- =================================================================== -->
+      <section id="loading-card" class="wizard-step w-full">
+        <div id="loading-container" class="civic-card p-12 sm:p-16 lg:p-20 flex flex-col items-center justify-center text-center min-h-[460px]">
+          
+          <!-- Animated Progress Bar with Soft Amber Glow -->
+          <div class="w-full max-w-xl flex flex-col items-center mb-8">
+            <div class="w-16 h-16 rounded-2xl bg-[#141b28] border border-white/10 flex items-center justify-center text-[#f5a623] mb-6 shadow-xl">
+              <svg class="w-8 h-8 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+
+            <span class="text-xs uppercase tracking-[0.05em] font-bold text-[#9ca3af] block mb-2">Translation in Progress</span>
+            <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">Structuring Administrative Letters</h3>
+            <p id="loading-step-text" class="text-sm sm:text-base font-medium text-[#e5e7eb] mb-8 h-6 transition-all duration-300">
+              Analyzing dialect nuances and administrative tone...
+            </p>
+
+            <!-- Clean Progress Bar Container -->
+            <div class="w-full bg-[#0d121c] rounded-full h-3 overflow-hidden border border-white/[0.08] p-[1px]">
+              <div id="loading-progress-bar" class="loading-bar-glow h-full rounded-full transition-all duration-500" style="width: 30%;"></div>
+            </div>
+          </div>
+
+          <span class="text-xs text-[#9ca3af]">
+            Verified with Indian Administrative Compliance Protocols • Gemini AI Engine
+          </span>
+
+        </div>
+      </section>
+
+
+      <!-- =================================================================== -->
+      <!-- STEP 3: Generated Official Letters Screen                           -->
+      <!-- =================================================================== -->
+      <section id="step-3-card" class="wizard-step w-full">
+        <div id="result-container" class="flex flex-col gap-8 lg:gap-10">
+          
+          <!-- Top Results Summary Card -->
+          <div class="civic-card p-8 sm:p-10 lg:p-12 flex flex-col gap-6">
+            
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
+              <div>
+                <span class="text-xs uppercase tracking-[0.05em] font-bold text-[#9ca3af] block mb-1">Step 3 of 3 • Generated Applications</span>
+                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">Official Administrative Applications</h2>
+              </div>
+
+              <!-- Top Action Buttons (Min 48px, clean SVG line icons) -->
+              <div id="step-3-actions" class="flex flex-wrap items-center gap-3">
+                <button id="btn-copy" type="button" class="btn-secondary-neutral min-h-[48px] px-4 py-2 text-xs font-semibold rounded-xl" title="Copy active letter to clipboard">
+                  <svg class="w-4 h-4 text-[#9ca3af]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy Letter</span>
+                </button>
+
+                <!-- Download Dropdown Component (English, Hindi, or Both) -->
+                <div class="relative inline-block text-left" id="download-dropdown-container">
+                  <button id="btn-download-pdf" type="button" class="btn-primary-amber min-h-[48px] px-5 py-2 text-xs font-bold rounded-xl flex items-center gap-2" title="Download formatted A4 PDF" aria-expanded="false" aria-haspopup="true">
+                    <svg class="w-4 h-4 text-[#0b0f17]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Download PDF</span>
+                    <svg class="w-3.5 h-3.5 text-[#0b0f17] ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+
+                  <!-- Download Options Menu -->
+                  <div id="download-menu" class="hidden absolute right-0 mt-2 w-64 rounded-xl bg-[#131a28] border border-white/10 shadow-2xl z-30 p-2 flex flex-col gap-1 backdrop-blur-lg">
+                    <button id="btn-download-english" type="button" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-semibold text-white hover:bg-white/10 flex items-center gap-2.5 transition-colors cursor-pointer">
+                      <svg class="w-4 h-4 text-[#f5a623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                      <div class="flex flex-col">
+                        <span class="font-medium text-white">English Letter (PDF)</span>
+                        <span class="text-[10px] text-[#9ca3af]">Official A4 English draft</span>
+                      </div>
+                    </button>
+                    <button id="btn-download-hindi" type="button" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-semibold text-white hover:bg-white/10 flex items-center gap-2.5 transition-colors cursor-pointer">
+                      <svg class="w-4 h-4 text-[#f5a623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                      <div class="flex flex-col">
+                        <span class="font-medium text-white">Hindi Letter (हिंदी PDF)</span>
+                        <span class="text-[10px] text-[#9ca3af]">औपचारिक हिंदी आवेदन पत्र</span>
+                      </div>
+                    </button>
+                    <div class="h-[1px] bg-white/10 my-1"></div>
+                    <button id="btn-download-both" type="button" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-semibold text-[#f5a623] hover:bg-[#f5a623]/10 flex items-center gap-2.5 transition-colors cursor-pointer">
+                      <svg class="w-4 h-4 text-[#f5a623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="16" height="16" rx="2"></rect>
+                        <path d="M6 2h14a2 2 0 0 1 2 2v14"></path>
+                      </svg>
+                      <div class="flex flex-col">
+                        <span class="font-bold text-[#f5a623]">Both Letters (Combined PDF)</span>
+                        <span class="text-[10px] text-[#9ca3af]">English + Hindi in 1 multi-page PDF</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <button id="btn-print" type="button" class="btn-secondary-neutral min-h-[48px] px-4 py-2 text-xs font-semibold rounded-xl" title="Print physical A4 letter">
+                  <svg class="w-4 h-4 text-[#9ca3af]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                  </svg>
+                  <span>Print</span>
+                </button>
+
+                <button id="btn-toggle-edit" type="button" class="btn-secondary-neutral min-h-[48px] px-4 py-2 text-xs font-semibold rounded-xl" title="Edit in-place directly">
+                  <svg class="w-4 h-4 text-[#9ca3af]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                  </svg>
+                  <span>Edit Letter</span>
+                </button>
+
+                <button id="btn-restart" type="button" class="btn-secondary-neutral min-h-[48px] px-4 py-2 text-xs font-semibold rounded-xl" title="Start a new letter">
+                  <svg class="w-4 h-4 text-[#9ca3af]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 2v6h6M21.5 22v-6h-6"></path>
+                    <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.3"></path>
+                  </svg>
+                  <span>New Application</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Subject & Dialect Info -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+              <div class="md:col-span-8 p-4 sm:p-5 rounded-xl bg-[#0d121c] border border-white/[0.08] flex items-start gap-3">
+                <span class="text-xs uppercase tracking-wider font-bold text-[#9ca3af] shrink-0 mt-0.5">Subject:</span>
+                <span id="grievance-summary-text" class="text-sm sm:text-base font-semibold text-white leading-relaxed">
+                  Formal Administrative Grievance Application
+                </span>
+              </div>
+
+              <div class="md:col-span-4 p-4 sm:p-5 rounded-xl bg-[#0d121c] border border-white/[0.08] flex items-center justify-between">
+                <span class="text-xs uppercase tracking-wider font-bold text-[#9ca3af]">Dialect:</span>
+                <span id="detected-language-badge" class="px-3 py-1 rounded-md text-xs font-semibold bg-[#161f30] text-[#e5e7eb] border border-white/10">
+                  Hindi / Regional Dialect
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- Missing Information Checklist Card (Inline Editable Fields)    -->
+          <!-- =============================================================== -->
+          <div id="checklist-card" class="civic-card p-8 sm:p-10 lg:p-12 flex flex-col gap-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-[#1a2336] flex items-center justify-center text-[#f5a623]">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-base sm:text-lg font-bold text-white">Missing Information Checklist</h3>
+                  <p class="text-xs text-[#9ca3af]">Fill in any missing official details below to automatically update both letters in real-time.</p>
+                </div>
+              </div>
+              <span id="missing-count-badge" class="px-3 py-1.5 rounded-full text-xs font-medium bg-[#141c2c] text-[#9ca3af] border border-white/10">
+                0 items
+              </span>
+            </div>
+
+            <!-- Inline Editable Checklist Container -->
+            <div id="missing-checklist-container" class="flex flex-col gap-3.5 pt-2">
+              <!-- Dynamically populated rows with inline inputs -->
+            </div>
+
+            <!-- Legacy container for backward compatibility -->
+            <div id="missing-info-container" class="hidden"></div>
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- TWO LARGE EQUALLY-SIZED DOCUMENT CARDS SIDE-BY-SIDE             -->
+          <!-- =============================================================== -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-10 items-stretch">
+            
+            <!-- Left Document Card: Formal English Application -->
+            <div class="document-card p-8 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between min-h-[580px]">
+              <div>
+                <!-- Official Document Header -->
+                <div class="border-b border-white/[0.09] pb-5 mb-6 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#f5a623]"></span>
+                    <span class="text-xs uppercase tracking-[0.08em] font-bold text-white">
+                      Official English Application
+                    </span>
+                  </div>
+                  <button id="btn-copy-english" type="button" class="text-xs font-semibold text-[#9ca3af] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+
+                <!-- Letter Body (Serif Font: Lora, comfortable 1.75 line-height) -->
+                <div id="letter-english-body" class="letter-serif-body whitespace-pre-wrap">
+                  <!-- Filled dynamically -->
+                </div>
+              </div>
+
+              <!-- Letter Footer -->
+              <div class="border-t border-white/[0.08] pt-5 mt-8 flex items-center justify-between text-xs text-[#9ca3af]">
+                <span>Standard Administrative Format</span>
+                <span>Ready for Official Submission</span>
+              </div>
+            </div>
+
+            <!-- Right Document Card: औपचारिक हिंदी आवेदन पत्र -->
+            <div class="document-card p-8 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between min-h-[580px]">
+              <div>
+                <!-- Official Document Header -->
+                <div class="border-b border-white/[0.09] pb-5 mb-6 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#f5a623]"></span>
+                    <span class="text-xs uppercase tracking-[0.08em] font-bold text-white">
+                      औपचारिक हिंदी आवेदन पत्र
+                    </span>
+                  </div>
+                  <button id="btn-copy-hindi" type="button" class="text-xs font-semibold text-[#9ca3af] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>प्रतिलिपि (Copy)</span>
+                  </button>
+                </div>
+
+                <!-- Letter Body (Noto Sans Devanagari, comfortable 1.85 line-height) -->
+                <div id="letter-hindi-body" class="letter-hindi-body whitespace-pre-wrap">
+                  <!-- Filled dynamically -->
+                </div>
+              </div>
+
+              <!-- Letter Footer -->
+              <div class="border-t border-white/[0.08] pt-5 mt-8 flex items-center justify-between text-xs text-[#9ca3af]">
+                <span>शुद्ध कार्यालयीन प्रारूप</span>
+                <span>हस्ताक्षर उपरांत जमा करने योग्य</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Hidden elements maintained for legacy JS event targets -->
+          <div class="hidden">
+            <div id="tab-english"></div>
+            <div id="tab-hindi"></div>
+            <div id="tab-split"></div>
+            <div id="english-view"></div>
+            <div id="hindi-view"></div>
+            <div id="split-view"></div>
+            <div id="split-english-body"></div>
+            <div id="split-hindi-body"></div>
+            <button id="btn-fill-placeholders"></button>
+            <div id="placeholder-empty-state"></div>
+          </div>
+
+          <!-- Official Citizen Submission Checklist (Trustworthy Civic Service) -->
+          <div class="civic-card p-8 sm:p-10 lg:p-12 flex flex-col gap-5">
+            <div class="flex items-center gap-3 text-white font-bold text-sm sm:text-base">
+              <svg class="w-5 h-5 text-[#f5a623]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>Citizen Filing Guidelines (कार्यालयीन प्रस्तुति हेतु आवश्यक निर्देश)</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm text-[#9ca3af] leading-relaxed">
+              <div class="p-5 rounded-xl bg-[#0d121c] border border-white/[0.08]">
+                <strong class="text-white block mb-1.5 font-semibold text-sm">1. Two Printouts:</strong>
+                Print 2 physical copies on standard A4 paper. Affix your physical signature and date at the bottom of both copies.
+              </div>
+              <div class="p-5 rounded-xl bg-[#0d121c] border border-white/[0.08]">
+                <strong class="text-white block mb-1.5 font-semibold text-sm">2. Receiving Stamp (पावती):</strong>
+                Submit one copy to the official receiver and obtain a stamped, dated receiving receipt on your second copy.
+              </div>
+              <div class="p-5 rounded-xl bg-[#0d121c] border border-white/[0.08]">
+                <strong class="text-white block mb-1.5 font-semibold text-sm">3. Enclosures (संलग्नक):</strong>
+                Attach self-attested photocopies of identity proofs, consumer receipts, or photo evidence mentioned in the application.
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Return Action -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+            <button id="btn-back-to-step-2" type="button" class="btn-secondary-neutral w-full sm:w-auto">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Modify Grievance Statement</span>
+            </button>
+
+            <button id="btn-bottom-restart" type="button" class="btn-primary-amber w-full sm:w-auto">
+              <span>Start Another Grievance</span>
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer: Civic Tech Dignity -->
+    <footer class="border-t border-white/[0.08] bg-[#0b0f17]/90 py-8 mt-16 text-xs text-[#9ca3af] w-full">
+      <div class="w-full px-6 sm:px-10 lg:px-12 xl:px-16 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-white">SahajForm</span>
+          <span>• Open Civic Administrative Empowerment Initiative</span>
+        </div>
+        <p class="text-[11px] text-[#9ca3af] text-center sm:text-right">
+          Standard administrative draft. Citizen verification required prior to formal filing.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Placeholder Fill-In Modal (Optional Quick Editor) -->
+    <div id="placeholder-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+      <div class="civic-card bg-[#111724] border border-white/10 w-full max-w-lg p-8 flex flex-col gap-6 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <div>
+            <h3 class="text-lg font-bold text-white">Complete Application Details</h3>
+            <p class="text-xs text-[#9ca3af] mt-0.5">Input your specific information to replace placeholders.</p>
+          </div>
+          <button id="btn-close-modal" type="button" class="text-[#9ca3af] hover:text-white cursor-pointer p-1">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div id="modal-placeholder-list" class="flex flex-col gap-4 max-h-[50vh] overflow-y-auto pr-1">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
+          <button id="btn-apply-placeholders" type="button" class="btn-primary-amber min-h-[48px] px-6 text-xs font-bold rounded-xl">
+            Update Official Letters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Application Script (Plain Vanilla JS) -->
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>

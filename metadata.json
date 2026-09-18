@@ -1,0 +1,6 @@
+{
+  "name": "SahajForm",
+  "description": "Dialect-to-Official-Form Translator that converts informal spoken or typed problem descriptions into formal, polite government application letters in English and Hindi.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
