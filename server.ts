@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -66,7 +66,7 @@ Your mission is to understand their informal problem description and translate/r
 
 CRITICAL RULES:
 - STRICT FIDELITY TO FACTS: NEVER invent or hallucinate facts, dates, ticket numbers, meter numbers, or addresses that the user did not specify.
-- BILINGUAL UNIFIED PLACEHOLDERS: Whenever crucial official information is missing (such as applicant full name, specific residential address, consumer/meter number, ration card number, FIR reference, date of incident, contact phone), ALWAYS use clear bracketed placeholders with concise English labels in BOTH letters: e.g., [Full Name], [Complete Address], [Consumer Number], [Contact Number], [Date of Incident]. In the Hindi letter, use the exact same English bracket labels (e.g., मैं, [Full Name], निवासी [Complete Address], दूरभाष [Contact Number]...) so that when the citizen provides a value, it seamlessly replaces the placeholder across BOTH the English and Hindi letters simultaneously.
+- PLACEHOLDERS: Whenever crucial official information is missing (like applicant full name, specific residential address, consumer/meter number, ration card number, FIR reference, specific date of incident, contact phone), ALWAYS use clear bracketed placeholders: e.g., [Your Full Name], [Your Complete Address], [Consumer/CA Number], [Date of Incident], [Contact Number]. In Hindi: [आपका पूरा नाम], [पूरा पता], [उपभोक्ता संख्या], [दिनांक], आदि।
 - TONE: Respectful, humble yet firm, clear, polite, and adhering to Indian bureaucratic conventions (To, Designation, Department, Subject, Salutation, Facts, Hardship, Humble Prayer/Remedy sought, Closing, Enclosures).
 - ACCURATE RECIPIENT: Choose the standard Indian department designation based on the form type (e.g. The Sub-Divisional Magistrate, The Station House Officer (SHO), The Executive Engineer / Assistant Engineer (Electricity Distribution), The District Supply Officer / Food & Civil Supplies, The Public Information Officer (PIO under RTI Act 2005), The Principal / Headmaster).
 - STRICT JSON OUTPUT matching the response schema exactly.`;
@@ -82,9 +82,9 @@ Analyze the user's text and return:
 2. summary: A crisp one-sentence factual summary of the core grievance or application.
 3. formal_english: The full formal administrative application letter in English, ready to be printed or submitted.
 4. formal_hindi: The full formal administrative application letter in Hindi (औपचारिक शासकीय प्रार्थना पत्र), ready to be printed or submitted.
-5. missing_info: An array of strings listing the exact bracket tags used in the letters that the citizen must fill in (e.g., ["Full Name", "Complete Address", "Consumer Number", "Contact Number"]).`;
+5. missing_info: An array of strings listing specific missing details the citizen must fill into the placeholders before submitting (e.g., ["Your Full Name", "Residential Address with Ward/Pincode", "Electricity Consumer / CA Number", "Date of Outage"]).`;
 
-    const candidateModels = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
+    const candidateModels = ['gemini-3.6-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
     let lastError: any = null;
     let responseText: string | undefined = undefined;
 
