@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-label="SahajForm system architecture">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0f17"/><stop offset="1" stop-color="#121826"/></linearGradient>
+  <marker id="ar" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="12" refY="8" orient="auto"><path d="M0 1L15 8L0 15z" fill="#f5a623"/></marker>
+  <marker id="ag" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" refX="12" refY="8" orient="auto"><path d="M0 1L15 8L0 15z" fill="#7f8aa3"/></marker>
+  <style>
+    text{font-family:'Segoe UI',Inter,Helvetica,Arial,sans-serif}
+    .flow{stroke-dasharray:10 8;animation:d 1.2s linear infinite} @keyframes d{to{stroke-dashoffset:-18}}
+    .back{stroke-dasharray:6 8;animation:d2 2s linear infinite} @keyframes d2{to{stroke-dashoffset:14}}
+    .pulse{animation:p 3s ease-in-out infinite} @keyframes p{0%,100%{opacity:.55}50%{opacity:1}}
+  </style>
+</defs>
+<rect width="1200" height="560" rx="24" fill="url(#bg)"/>
+<text x="600" y="52" text-anchor="middle" font-size="26" font-weight="800" fill="#fff">System Architecture</text>
+<text x="600" y="78" text-anchor="middle" font-size="14" fill="#7f8aa3">Browser → Express → Gemini, and back as strict JSON</text>
+
+<rect x="36" y="150" width="190" height="150" rx="18" fill="#171e2d" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/>
+<text x="131" y="200" text-anchor="middle" font-size="40">🧑‍🌾</text>
+<text x="131" y="238" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">Citizen</text>
+<text x="131" y="262" text-anchor="middle" font-size="13" fill="#7f8aa3">Browser / Mobile</text>
+<text x="131" y="284" text-anchor="middle" font-size="12" fill="#f5a623">types or speaks in dialect</text>
+
+<rect x="290" y="110" width="290" height="230" rx="18" fill="#171e2d" stroke="#f5a623" stroke-width="2"/><text x="435.0" y="150" text-anchor="middle" font-size="21" font-weight="700" fill="#fff">Frontend</text><text x="435.0" y="174" text-anchor="middle" font-size="13.5" fill="#f5a623">Vite · Vanilla JS · Tailwind v4</text><text x="312" y="210" font-size="14.5" fill="#cbd2de">•  3-step wizard UI</text><text x="312" y="236" font-size="14.5" fill="#cbd2de">•  Voice input (Web Speech API)</text><text x="312" y="262" font-size="14.5" fill="#cbd2de">•  Live placeholder engine</text><text x="312" y="288" font-size="14.5" fill="#cbd2de">•  html2canvas + jsPDF export</text><text x="312" y="314" font-size="14.5" fill="#cbd2de">•  Print-ready A4 layout</text>
+<rect x="650" y="110" width="260" height="230" rx="18" fill="#171e2d" stroke="#f5a623" stroke-width="2"/><text x="780.0" y="150" text-anchor="middle" font-size="21" font-weight="700" fill="#fff">Backend</text><text x="780.0" y="174" text-anchor="middle" font-size="13.5" fill="#f5a623">Node.js · Express · TypeScript</text><text x="672" y="210" font-size="14.5" fill="#cbd2de">•  POST /api/generate</text><text x="672" y="236" font-size="14.5" fill="#cbd2de">•  Prompt construction</text><text x="672" y="262" font-size="14.5" fill="#cbd2de">•  JSON-schema validation</text><text x="672" y="288" font-size="14.5" fill="#cbd2de">•  API key kept server-side</text><text x="672" y="314" font-size="14.5" fill="#cbd2de">•  Model fallback chain</text>
+<rect x="970" y="140" width="200" height="170" rx="18" fill="#171e2d" stroke="#8ab4f8" stroke-width="2"/>
+<text x="1070" y="182" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">Gemini API</text>
+<text x="1070" y="206" text-anchor="middle" font-size="13" fill="#8ab4f8">@google/genai</text>
+<text x="1070" y="240" text-anchor="middle" font-size="13.5" fill="#cbd2de">Structured JSON</text>
+<text x="1070" y="262" text-anchor="middle" font-size="13.5" fill="#cbd2de">temperature 0.2</text>
+<text x="1070" y="284" text-anchor="middle" font-size="13.5" fill="#cbd2de">Zero-hallucination prompt</text>
+
+<path class="flow" d="M228 225H286" stroke="#f5a623" stroke-width="3.5" fill="none" marker-end="url(#ar)"/>
+<path class="flow" d="M582 225H646" stroke="#f5a623" stroke-width="3.5" fill="none" marker-end="url(#ar)"/>
+<path class="flow" d="M912 225H966" stroke="#f5a623" stroke-width="3.5" fill="none" marker-end="url(#ar)"/>
+<path class="back" d="M1070 312V420H435V344" stroke="#7f8aa3" stroke-width="2.5" fill="none" marker-end="url(#ag)"/>
+<text x="750" y="410" text-anchor="middle" font-size="14" fill="#a8b0bf">bilingual JSON response returned to the UI</text>
+
+<g class="pulse">
+<rect x="200" y="452" width="800" height="72" rx="14" fill="#10161f" stroke="#ffffff" stroke-opacity=".12"/>
+<text x="224" y="482" font-size="13" fill="#7f8aa3" font-weight="700">RESPONSE SCHEMA</text>
+<text x="224" y="506" font-size="15" fill="#ffe3a8" font-family="Consolas,'Courier New',monospace">{ detected_language, summary, formal_english, formal_hindi, missing_info[] }</text>
+</g>
+</svg>

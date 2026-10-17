@@ -1,123 +1,183 @@
 <div align="center">
 
-<img src="./docs/assets/logo.png" width="110" alt="SahajForm Logo" />
+<img src="./docs/assets/hero.svg" alt="SahajForm — turn your spoken dialect into a respectful official letter" width="100%" />
 
-# SahajForm | सहज फॉर्म
+<br/>
 
-### Turn your spoken dialect into a respectful official letter
+<a href="https://sahajform.onrender.com"><img src="https://img.shields.io/badge/▶%20LIVE%20DEMO-sahajform.onrender.com-F5A623?style=for-the-badge&labelColor=0b0f17" alt="Live demo" /></a>
+&nbsp;
+<a href="https://github.com/shivamdwivedicse/SahajForm/issues"><img src="https://img.shields.io/badge/REPORT-a%20bug-ef4444?style=for-the-badge&labelColor=0b0f17" alt="Report a bug" /></a>
+&nbsp;
+<a href="#-quick-start"><img src="https://img.shields.io/badge/RUN-locally-22c55e?style=for-the-badge&labelColor=0b0f17" alt="Run locally" /></a>
 
-**AI-powered bilingual translator that converts informal citizen grievances into formal government applications — in English and Hindi.**
+<br/><br/>
 
-[![Gemini API](https://img.shields.io/badge/AI-Google%20Gemini-F5A623?style=flat-square)](https://ai.google.dev/)
-[![React](https://img.shields.io/badge/Frontend-React%2019-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Vite](https://img.shields.io/badge/Build-Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#license)
+**AI-powered bilingual translator that turns informal citizen grievances into formal government applications, in English and Hindi.**
 
-[Live Demo](https://sahajform.onrender.com) · [Report Bug](https://github.com/shivamdwivedicse/SahajForm/issues) · [Request Feature](https://github.com/shivamdwivedicse/SahajForm/issues)
+<sub>🏆 Built for **TechCommons Hacks V2 — Hacks to Inspire** · Theme: AI for Social Good</sub>
 
-<img src="./docs/assets/thumbnail.png" width="700" alt="SahajForm Banner" />
+<br/>
+
+<img src="./docs/assets/demo.gif" alt="SahajForm full demo: opening screen, category, dialect input, generated letters, placeholder fill" width="92%" />
+
+<sub>Full run in 20 seconds: category → speak or type in your dialect → bilingual letters → fill the gaps → download.</sub>
+
+<br/><br/>
+
+<table>
+  <tr>
+    <td align="center" width="25%"><h1>7</h1><sub>GRIEVANCE<br/>CATEGORIES</sub></td>
+    <td align="center" width="25%"><h1>2</h1><sub>LANGUAGES,<br/>ONE CLICK</sub></td>
+    <td align="center" width="25%"><h1>3</h1><sub>STEPS FROM<br/>PROBLEM TO PDF</sub></td>
+    <td align="center" width="25%"><h1>0</h1><sub>INVENTED<br/>FACTS</sub></td>
+  </tr>
+</table>
+
+<p>
+  <a href="#-the-problem"><b>Problem</b></a> &nbsp;·&nbsp;
+  <a href="#-features"><b>Features</b></a> &nbsp;·&nbsp;
+  <a href="#-how-it-works"><b>How it works</b></a> &nbsp;·&nbsp;
+  <a href="#-architecture"><b>Architecture</b></a> &nbsp;·&nbsp;
+  <a href="#-tech-stack"><b>Stack</b></a> &nbsp;·&nbsp;
+  <a href="#-quick-start"><b>Quick start</b></a> &nbsp;·&nbsp;
+  <a href="#-roadmap"><b>Roadmap</b></a>
+</p>
 
 </div>
 
----
+<br/>
 
-## Table of Contents
+## 😶 The Problem
 
-- [About the Project](#about-the-project)
-- [The Problem](#the-problem)
-- [Key Features](#key-features)
-- [System Architecture](#system-architecture)
-- [User Flow](#user-flow)
-- [Tech Stack](#tech-stack)
-- [Demo](#demo)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Deployment](#deployment)
-- [Zero-Hallucination Design Principle](#zero-hallucination-design-principle)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [Contact](#contact)
+Millions of citizens in rural and semi-urban India know *exactly* what is wrong: the transformer burnt out, the ration dealer refuses grain, the pipeline has been leaking for a week. What they don't have is the **formal bureaucratic language** an office expects. So genuine complaints go unfiled, or get rejected for being informal or incomplete.
 
----
+**SahajForm removes the language barrier.**
 
-## About the Project
+<table>
+  <tr>
+    <th align="center" width="50%">🗣️ What the citizen says</th>
+    <th align="center" width="50%">📄 What SahajForm writes</th>
+  </tr>
+  <tr>
+    <td valign="top"><i>"Bhaiya hamare mohalle me 3 din se light gayab hai. Transformer se bahut zor se aawaz aayi thi, dhuan nikla tha. Bacchon ki pariksha chal rahi hai, inverter bhi dead ho gaya. Line man ko bola to bolta hai mere paas saman nahi hai…"</i></td>
+    <td valign="top"><i>"Respected Sir/Madam, I most respectfully submit that there has been no electricity supply in our locality for the past three days. A loud noise followed by smoke was observed from the local transformer… I humbly request you to arrange its replacement at the earliest."</i><br/><br/><sub>+ the same letter in formal हिंदी, side by side.</sub></td>
+  </tr>
+</table>
 
-**SahajForm** helps Indian citizens convert informal, spoken-style descriptions of their problems — in Hindi, Hinglish, Bhojpuri, or any local dialect — into polite, properly structured **official government application/complaint letters**, generated simultaneously in **English and Hindi**, ready to print and submit.
+<br/>
 
-It was built for **TechCommons Hacks V2 — Hacks to Inspire**, under the theme of AI for Social Good.
+## ✨ Features
 
-## The Problem
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>🗣️ Speak your dialect</h3>
+      Hindi, Hinglish, Bhojpuri, Haryanvi… type it, or tap the mic and just talk.
+    </td>
+    <td width="33%" valign="top">
+      <h3>🏛️ 7 official formats</h3>
+      Electricity, Ration Card, Water Supply, Police/GD, RTI, School/EWS, General (DM/SDM).
+    </td>
+    <td width="33%" valign="top">
+      <h3>🌐 Two letters at once</h3>
+      Formal English <b>and</b> शुद्ध हिंदी, generated together and shown side by side.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h3>🛡️ Zero-hallucination</h3>
+      Never invents names, numbers or dates. Gaps become clear <code>[placeholders]</code>.
+    </td>
+    <td valign="top">
+      <h3>⚡ Live placeholder fill</h3>
+      Fill a detail once in the checklist and <b>both</b> letters update instantly.
+    </td>
+    <td valign="top">
+      <h3>📄 PDF, print, copy</h3>
+      English-only, Hindi-only or combined A4 PDF. Print-ready, sign and submit.
+    </td>
+  </tr>
+</table>
 
-Millions of citizens in rural and semi-urban India struggle to write formal complaint letters for basic civic issues — electricity outages, ration card disputes, water supply problems, police complaints, RTI requests, and more. They understand their problem perfectly, but not the *formal bureaucratic language* required to file it. This gap causes genuine grievances to go unreported or get rejected due to incomplete/informal applications.
+<br/>
 
-**SahajForm removes that language barrier entirely.**
+## 🧭 How it works
 
-## Key Features
+<div align="center">
+<img src="./docs/assets/flow.svg" alt="User journey: select, describe, translate, review, submit" width="100%" />
+</div>
 
-| Feature | Description |
+<br/>
+
+## 📐 Architecture
+
+<div align="center">
+<img src="./docs/assets/architecture.svg" alt="System architecture: browser, Express backend, Gemini API" width="100%" />
+</div>
+
+<br/>
+
+<details>
+<summary><b>🔎 See the request/response sequence</b></summary>
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Citizen
+    participant F as Frontend (Vite + JS)
+    participant B as Express API
+    participant G as Gemini API
+    C->>F: Pick category + describe problem (typed or voice)
+    F->>B: POST /api/generate { formType, description }
+    B->>B: Build schema-constrained, zero-hallucination prompt
+    B->>G: generateContent (JSON schema, temp 0.2)
+    G-->>B: { detected_language, summary, formal_english, formal_hindi, missing_info[] }
+    B-->>F: Validated JSON
+    F-->>C: Two letters + missing-info checklist
+    C->>F: Fill placeholders
+    F-->>C: Both letters update live → PDF / Print
+```
+
+</details>
+
+<br/>
+
+## 🧰 Tech Stack
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+<img src="https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+<img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+<br/>
+<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
+<img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+<img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini" />
+<img src="https://img.shields.io/badge/jsPDF-E34F26?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="jsPDF" />
+<img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black" alt="Render" />
+
+</div>
+
+| Layer | What we use |
 |---|---|
-| 🗣️ **Dialect Input** | Accepts casual Hindi, Hinglish, or regional dialects — typed or spoken |
-| 🏛️ **7 Grievance Categories** | Electricity, Ration Card, Water Supply, Police Complaint, RTI, School Admission, General Administrative |
-| 🌐 **Bilingual Output** | Generates matching formal letters in English **and** Hindi simultaneously |
-| ✅ **Zero-Hallucination Protocol** | Never invents facts — missing details (name, address, date) are flagged as clear placeholders |
-| 📝 **Live Placeholder Editing** | Fill in missing details once — both letters update in real time |
-| 📄 **Flexible PDF Export** | Download English only, Hindi only, or a combined bilingual PDF |
-| 🖨️ **Print-Ready Formatting** | Official A4 layout, ready to sign and submit |
+| **Frontend** | Vite · vanilla JavaScript · Tailwind CSS v4 · Web Speech API (voice) · html2canvas + jsPDF |
+| **Backend** | Node.js · Express · TypeScript (`tsx` for dev, `esbuild` for prod) |
+| **AI** | Google Gemini via `@google/genai`, strict JSON-schema output, low temperature |
+| **Hosting** | Render |
 
-## System Architecture
+<br/>
 
-<div align="center">
-<img src="./docs/assets/architecture.png" width="850" alt="SahajForm Architecture Diagram" />
-</div>
+## 🔒 Zero-Hallucination Design Principle
 
-```mermaid
-flowchart LR
-    A[Citizen<br/>Browser / Mobile] --> B[React + Vite Frontend<br/>TailwindCSS]
-    B --> C[Node.js + Express Backend]
-    C --> D[Google Gemini API<br/>Structured JSON Output]
-    D -.Bilingual JSON response.-> B
-```
+> [!IMPORTANT]
+> A government application with an invented consumer number is worse than no application. SahajForm's prompt is locked to a strict JSON schema and instructed to **never fabricate** names, IDs, dates or allegations the citizen didn't state.
 
-The frontend collects the grievance category and informal description, sends it to an Express backend, which constructs a schema-constrained prompt and calls the **Google Gemini API**. Gemini returns strict JSON (`detected_language`, `summary`, `formal_english`, `formal_hindi`, `missing_info`), which the frontend renders as two side-by-side official letter cards.
+Whatever the AI can't infer becomes an **editable placeholder** (for example `[Consumer ID]`) and a line in the *Missing Information Checklist*. Fill it once; both letters update. Nothing goes out unreviewed.
 
-## User Flow
+<br/>
 
-<div align="center">
-<img src="./docs/assets/flowchart.png" width="850" alt="SahajForm User Journey" />
-</div>
-
-```mermaid
-flowchart LR
-    S1[Step 1<br/>Select Grievance Category] --> S2[Step 2<br/>Describe Problem in Own Dialect]
-    S2 --> AI[AI Step<br/>Gemini Translates to Formal Letter]
-    AI --> S3[Step 3<br/>Review & Fill Missing Details]
-    S3 --> F[Final<br/>Download / Print PDF]
-```
-
-## Demo
-
-> 🎥 *Add your screen-recorded demo GIF/video here.*
-> Suggested: record a full run — select category → describe grievance in Hinglish → generate → fill missing fields → download PDF — and save it as `docs/assets/demo.gif`, then reference it below:
->
-> 
-> [SahajForm Demo](./docs/assets/demo.gif)
->
-
-## Tech Stack
-
-**Frontend:** React 19 · Vite · TypeScript · TailwindCSS · Lucide Icons · jsPDF
-**Backend:** Node.js · Express · TypeScript (via `tsx` / `esbuild`)
-**AI:** Google Gemini API (`@google/genai`) — structured JSON schema output
-**Deployment:** Render
-
-## Getting Started
-
-### Prerequisites
-- Node.js (v18+)
-- A [Google Gemini API key](https://aistudio.google.com/app/apikey)
-
-### Installation
+## 🚀 Quick Start
 
 ```bash
 git clone https://github.com/shivamdwivedicse/SahajForm.git
@@ -125,79 +185,80 @@ cd SahajForm
 npm install --legacy-peer-deps
 ```
 
-### Run locally
+Create `.env.local` in the project root ([get a free Gemini key](https://aistudio.google.com/app/apikey)):
 
-```bash
-npm run dev
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Visit `http://localhost:3000` (or the port shown in your terminal).
+```bash
+npm run dev          # http://localhost:3000
+```
 
-### Build for production
+<details>
+<summary><b>📦 Production build &amp; ☁️ deploy on Render</b></summary>
+
+<br/>
 
 ```bash
 npm run build
 npm run start
 ```
 
-## Environment Variables
+| Render setting | Value |
+|---|---|
+| Build command | `npm install && npm run build` |
+| Start command | `npm run start` |
+| Environment variable | `GEMINI_API_KEY` |
 
-Create a `.env.local` file in the project root:
+</details>
 
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
+> [!NOTE]
+> Requires **Node.js 18+**. Voice input uses the browser's speech service, so it works best in Google Chrome.
+
+<br/>
+
+## 📍 Roadmap
+
+- [x] Bilingual letters (English + Hindi) with zero-hallucination placeholders
+- [x] Live placeholder editing, PDF export (EN / HI / combined), print layout
+- [x] Voice input (Hindi / Hinglish) via the Web Speech API
+- [ ] More categories: pension, land records, health schemes
+- [ ] "Track your application": follow-up reminders after submission
+- [ ] Better dialect detection (Bhojpuri, Haryanvi, Maithili…)
+- [ ] Offline-friendly PWA for low-connectivity areas
+
+<br/>
+
+## 🤝 Contributing
+
+Issues and pull requests are welcome.
+
+```bash
+git checkout -b feature/AmazingFeature
+git commit -m "Add some AmazingFeature"
+git push origin feature/AmazingFeature   # then open a Pull Request
 ```
 
-## Deployment
+<br/>
 
-SahajForm is deployed on **[Render](https://render.com)**.
+## 👤 Author
 
-| Setting | Value |
-|---|---|
-| Build Command | `npm install && npm run build` |
-| Start Command | `npm run start` |
-| Environment Variable | `GEMINI_API_KEY` |
-
-Live: **[sahajform.onrender.com](https://sahajform.onrender.com)**
-
-## Zero-Hallucination Design Principle
-
-SahajForm's AI prompt is constrained by a strict JSON schema and explicit instructions to **never fabricate** facts — consumer numbers, names, dates, or allegations the citizen didn't state. Any detail the AI cannot infer from the user's input is surfaced as an **editable placeholder** (e.g. `[Consumer ID]`), not guessed. This makes the tool practically trustworthy for real bureaucratic submission.
-
-## Roadmap
-
-- [ ] Voice input (speech-to-text) for fully non-literate accessibility
-- [ ] More grievance categories (pension, land records, health schemes)
-- [ ] "Track your application" — follow-up reminders after submission
-- [ ] Multi-dialect detection improvements (Bhojpuri, Haryanvi, Maithili, etc.)
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-Distributed under the MIT License.
-
----
-
-## Contact
+<div align="center">
 
 **Shivam Dwivedi**
 
-[![GitHub](https://img.shields.io/badge/GitHub-shivamdwivedicse-181717?style=flat-square&logo=github)](https://www.github.com/shivamdwivedicse)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shivam%20Dwivedi-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shivam-dwivedi-27661a395/)
-[![Email](https://img.shields.io/badge/Email-Shivamdwivedicse20919%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:Shivamdwivedicse20919@gmail.com)
-[![Discord](https://img.shields.io/badge/Discord-shivamdwivedi0919-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/users/shivamdwivedi0919)
+[![GitHub](https://img.shields.io/badge/GitHub-shivamdwivedicse-181717?style=for-the-badge&logo=github)](https://www.github.com/shivamdwivedicse)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shivam%20Dwivedi-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shivam-dwivedi-27661a395/)
+[![Email](https://img.shields.io/badge/Email-Get%20in%20touch-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:Shivamdwivedicse20919@gmail.com)
+[![Discord](https://img.shields.io/badge/Discord-shivamdwivedi0919-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/shivamdwivedi0919)
 
-Project Link: [https://github.com/shivamdwivedicse/SahajForm](https://github.com/shivamdwivedicse/SahajForm)
+<br/>
 
-<div align="center">
-<sub>Built by Shivam Dwivedi and with lot of coffee</sub>
+<sub>Distributed under the MIT License.</sub>
+
+<br/>
+
+**सहज फॉर्म** · *Every citizen deserves to be heard in the language the office understands.*
+
 </div>
