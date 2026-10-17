@@ -100,9 +100,9 @@ flowchart LR
 > 🎥 *Add your screen-recorded demo GIF/video here.*
 > Suggested: record a full run — select category → describe grievance in Hinglish → generate → fill missing fields → download PDF — and save it as `docs/assets/demo.gif`, then reference it below:
 >
-> ```markdown
-> ![SahajForm Demo](./docs/assets/demo.gif)
-> ```
+> 
+> [SahajForm Demo](./docs/assets/demo.gif)
+>
 
 ## Tech Stack
 
