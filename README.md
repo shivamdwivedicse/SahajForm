@@ -199,5 +199,5 @@ Distributed under the MIT License.
 Project Link: [https://github.com/shivamdwivedicse/SahajForm](https://github.com/shivamdwivedicse/SahajForm)
 
 <div align="center">
-<sub>Built for TechCommons Hacks V2 — Hacks to Inspire 🇮🇳</sub>
+<sub>Built by Shivam Dwivedi and with lot of coffee</sub>
 </div>
