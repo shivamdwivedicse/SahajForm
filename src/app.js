@@ -117,6 +117,10 @@ const btnCloseModal = document.getElementById('btn-close-modal');
 // ============================================================================
 // Wizard Step Transitions
 // ============================================================================
+function setProgress(percent) {
+  if (stepperProgressFill) stepperProgressFill.style.setProperty('--pn', String(percent / 100));
+}
+
 function goToStep(step) {
   currentStep = step;
 
@@ -137,25 +141,25 @@ function goToStep(step) {
     if (step1Card) step1Card.classList.add('active');
     stepDot1.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-active';
     if (stepLabel1) stepLabel1.className = 'text-xs font-semibold text-white';
-    if (stepperProgressFill) stepperProgressFill.style.width = '0%';
+    setProgress(0);
   } else if (step === 2) {
     if (step2Card) step2Card.classList.add('active');
     stepDot1.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-completed';
     stepDot2.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-active';
     if (stepLabel2) stepLabel2.className = 'text-xs font-semibold text-white';
-    if (stepperProgressFill) stepperProgressFill.style.width = '50%';
+    setProgress(50);
   } else if (step === 'loading') {
     if (loadingCard) loadingCard.classList.add('active');
     stepDot1.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-completed';
     stepDot2.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-active';
-    if (stepperProgressFill) stepperProgressFill.style.width = '75%';
+    setProgress(75);
   } else if (step === 3) {
     if (step3Card) step3Card.classList.add('active');
     stepDot1.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-completed';
     stepDot2.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-completed';
     stepDot3.className = 'w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm step-indicator-active';
     if (stepLabel3) stepLabel3.className = 'text-xs font-semibold text-white';
-    if (stepperProgressFill) stepperProgressFill.style.width = '100%';
+    setProgress(100);
   }
 
   // Smooth scroll up to top of active card
@@ -291,9 +295,20 @@ function initSpeechRecognition() {
   };
 
   recognition.onerror = (event) => {
-    console.error('Speech recognition error:', event.error);
+    console.warn('Speech recognition error:', event.error);
     stopRecording();
-    showToast(`Microphone error: ${event.error}`, 'error');
+    const messages = {
+      'network': 'Voice input could not reach the speech service. Check your internet, turn off VPN/ad-blocker, or use Google Chrome. You can still type your problem.',
+      'not-allowed': 'Microphone permission is blocked. Click the lock icon in the address bar and allow the microphone.',
+      'service-not-allowed': 'Voice input is blocked by this browser. Please use Google Chrome, or type your problem.',
+      'audio-capture': 'No microphone was found. Please connect a microphone and try again.',
+      'no-speech': 'No speech detected. Please try again and speak a little louder.',
+      'aborted': null,
+    };
+    const msg = event.error in messages
+      ? messages[event.error]
+      : `Microphone error: ${event.error}`;
+    if (msg) showToast(msg, 'error');
   };
 
   recognition.onend = () => {
@@ -394,24 +409,59 @@ const PLACEHOLDER_SYNONYM_GROUPS = [
   ['designation', 'authority designation', 'पदनाम', 'अधिकारी का पदनाम']
 ];
 
-function getAllSynonyms(key) {
-  const clean = key.replace(/[\[\]]/g, '').trim().toLowerCase();
-  const matched = [clean];
-  for (const group of PLACEHOLDER_SYNONYM_GROUPS) {
-    const inGroup = group.some(item => {
-      const lower = item.toLowerCase();
-      return lower === clean || clean.includes(lower) || lower.includes(clean);
-    });
-    if (inGroup) {
-      group.forEach(g => {
-        const lowerG = g.toLowerCase();
-        if (!matched.includes(lowerG)) {
-          matched.push(lowerG);
-        }
-      });
-    }
+// Normalise a placeholder label so "[Your  Full Name]" === "your full name"
+function normalizeKey(str) {
+  return String(str || '').replace(/[\[\]]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+// ---------------------------------------------------------------------------
+// Concept matching. The AI names the same detail differently in the checklist
+// ("Residential Address with Ward/Pincode") and in the letter ("[Your Complete
+// Address]"), so both labels are mapped to a concept and compared by concept.
+// A label belongs to a concept only if ALL its meaningful words fit that
+// concept - so "Name of your Village" is never mistaken for the applicant name.
+// ---------------------------------------------------------------------------
+const FILLER_WORDS = new Set([
+  'your', 'full', 'complete', 'the', 'of', 'with', 'and', 'or', 'a', 'an', 'in', 'to', 'for', 'my', 'applicant', 'applicants', 'citizen', 'details', 'detail', 'no', 'number', 'num', 'id',
+  'आपका', 'आपकी', 'पूरा', 'पूरी', 'का', 'की', 'के', 'और', 'एवं', 'आवेदक', 'आवेदिका', 'प्रार्थी', 'संख्या', 'नंबर', 'विवरण',
+]);
+const CONCEPTS = [
+  // order matters: most specific first
+  { id: 'village',  core: ['village', 'gaon', 'gram', 'गाँव', 'गांव', 'ग्राम'], extra: ['name', 'naam', 'नाम'] },
+  { id: 'tehsil',   core: ['tehsil', 'tahsil', 'district', 'zila', 'block', 'taluka', 'तहसील', 'जिला', 'जनपद', 'ब्लॉक'], extra: ['name', 'naam', 'नाम', 'village', 'state'] },
+  { id: 'father',   core: ['father', 'fathers', 'father\'s', 'husband', 'pita', 'पिता', 'पति'], extra: ['name', 'naam', 'नाम'] },
+  { id: 'address',  core: ['address', 'pata', 'पता', 'residence', 'residential', 'निवास', 'निवासी'], extra: ['ward', 'pincode', 'pin', 'code', 'street', 'locality', 'mohalla', 'house', 'colony', 'वार्ड', 'पिनकोड', 'मोहल्ला', 'पूर्ण'] },
+  { id: 'contact',  core: ['contact', 'phone', 'mobile', 'telephone', 'sampark', 'durabhash', 'संपर्क', 'मोबाइल', 'फोन', 'दूरभाष'], extra: ['whatsapp'] },
+  { id: 'consumer', core: ['consumer', 'ca', 'meter', 'connection', 'account', 'उपभोक्ता', 'मीटर', 'खाता', 'कनेक्शन', 'कंज्यूमर'], extra: ['electricity', 'bijli', 'बिजली', 'विद्युत'] },
+  { id: 'date',     core: ['date', 'tarikh', 'dinank', 'दिनांक', 'तारीख', 'तिथि'], extra: ['incident', 'outage', 'time', 'event', 'occurrence', 'घटना', 'समय'] },
+  { id: 'ration',   core: ['ration', 'rashan', 'राशन'], extra: ['card', 'कार्ड'] },
+  { id: 'fir',      core: ['fir', 'gd', 'complaint', 'शिकायत'], extra: ['reference', 'प्रथम', 'सूचना', 'रिपोर्ट'] },
+  { id: 'designation', core: ['designation', 'पदनाम'], extra: ['authority', 'अधिकारी'] },
+  { id: 'name',     core: ['name', 'naam', 'nam', 'नाम', 'हस्ताक्षरकर्ता'], extra: [] },
+];
+
+function tokenize(label) {
+  return normalizeKey(label).split(/[^\p{L}\p{M}\p{N}']+/u).filter(Boolean);
+}
+
+function conceptOf(label) {
+  const tokens = tokenize(label).filter((t) => !FILLER_WORDS.has(t));
+  if (!tokens.length) return null;
+  for (const c of CONCEPTS) {
+    const allowed = new Set([...c.core, ...c.extra]);
+    if (tokens.some((t) => c.core.includes(t)) && tokens.every((t) => allowed.has(t))) return c.id;
   }
-  return matched;
+  return null;
+}
+
+// Same label, or same concept (e.g. "Complete Address" ~ "Residential Address with Ward")
+function keysMatch(a, b) {
+  const na = normalizeKey(a);
+  const nb = normalizeKey(b);
+  if (!na || !nb) return false;
+  if (na === nb) return true;
+  const ca = conceptOf(na);
+  return !!ca && ca === conceptOf(nb);
 }
 
 function escapeRegExp(string) {
@@ -451,15 +501,11 @@ function attachPlaceholderClickHandlers() {
 // Seamless jump to checklist row or prompt modal
 function focusChecklistOrPrompt(rawKey) {
   const cleanKey = rawKey.replace(/[\[\]]/g, '').trim();
-  const synonyms = getAllSynonyms(cleanKey);
-  const allKeys = [cleanKey.toLowerCase(), ...synonyms.map(s => s.toLowerCase())];
-
   let matchedRow = null;
   if (missingChecklistContainer) {
     const rows = missingChecklistContainer.querySelectorAll('.checklist-row');
     for (const row of rows) {
-      const rowKey = (row.getAttribute('data-key') || '').replace(/[\[\]]/g, '').trim().toLowerCase();
-      if (allKeys.some(k => k === rowKey || rowKey.includes(k) || k.includes(rowKey))) {
+      if (keysMatch(cleanKey, row.getAttribute('data-key'))) {
         matchedRow = row;
         break;
       }
@@ -514,20 +560,10 @@ function replacePlaceholderInDocument(placeholderName, replacement) {
   const trimmedVal = replacement.trim();
   if (!rawClean || !trimmedVal) return;
 
-  const synonyms = getAllSynonyms(rawClean);
-
-  // 1. Replace in both English and Hindi letters
-  synonyms.forEach((syn) => {
-    // Exact bracket match [syn] or [ syn ] (case-insensitive)
-    const exactRegex = new RegExp(`\\[\\s*${escapeRegExp(syn)}\\s*\\]`, 'gi');
-    currentResult.formal_english = currentResult.formal_english.replace(exactRegex, trimmedVal);
-    currentResult.formal_hindi = currentResult.formal_hindi.replace(exactRegex, trimmedVal);
-
-    // Contextual bracket match like [Your Full Name] or [आपका पूरा नाम]
-    const phraseRegex = new RegExp(`\\[[^\\]]*?${escapeRegExp(syn)}[^\\]]*?\\]`, 'gi');
-    currentResult.formal_english = currentResult.formal_english.replace(phraseRegex, trimmedVal);
-    currentResult.formal_hindi = currentResult.formal_hindi.replace(phraseRegex, trimmedVal);
-  });
+  // 1. Replace every bracketed placeholder in both letters that means the same thing
+  const swap = (text) => (text || '').replace(/\[([^\]]+)\]/g, (full, inner) => (keysMatch(inner, rawClean) ? trimmedVal : full));
+  currentResult.formal_english = swap(currentResult.formal_english);
+  currentResult.formal_hindi = swap(currentResult.formal_hindi);
 
   // Track resolved state
   if (!currentResult.resolved_placeholders) {
@@ -541,20 +577,18 @@ function replacePlaceholderInDocument(placeholderName, replacement) {
   attachPlaceholderClickHandlers();
 
   // 3. Mark the checklist item as resolved
-  markChecklistItemResolved(rawClean, trimmedVal, synonyms);
+  markChecklistItemResolved(rawClean, trimmedVal);
 
   showToast(`Updated [${rawClean}] in both letters`, 'success');
 }
 
-function markChecklistItemResolved(key, val, synonyms = []) {
+function markChecklistItemResolved(key, val) {
   if (!missingChecklistContainer) return;
 
-  const allKeys = [key.toLowerCase(), ...synonyms.map(s => s.toLowerCase())];
   const rows = missingChecklistContainer.querySelectorAll('.checklist-row');
 
   rows.forEach((row) => {
-    const rowKey = (row.getAttribute('data-key') || '').replace(/[\[\]]/g, '').trim().toLowerCase();
-    const isMatch = allKeys.some(k => k === rowKey || rowKey.includes(k) || k.includes(rowKey));
+    const isMatch = keysMatch(key, row.getAttribute('data-key'));
 
     if (isMatch) {
       row.classList.add('checklist-row-resolved');
